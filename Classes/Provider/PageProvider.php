@@ -397,10 +397,11 @@ class PageProvider extends AbstractProvider implements ProviderInterface
     protected function unsetInheritedValues(Form\FormInterface $field, $values)
     {
         $name = $field->getName();
-        $inherit = (boolean) $field->getInherit();
-        $inheritEmpty = (boolean) $field->getInheritEmpty();
-        $empty = (true === empty($values[$name]) && $values[$name] !== '0' && $values[$name] !== 0);
-        if (false === $inherit || (true === $inheritEmpty && true === $empty)) {
+        $inherit = $field->getInherit();
+        $inheritEmpty = $field->getInheritEmpty();
+        $value = $values[$name] ?? null;
+        $empty = empty($value) && !in_array($value, [0, '0'], true);
+        if (!$inherit || ($inheritEmpty && $empty)) {
             unset($values[$name]);
         }
         return $values;
